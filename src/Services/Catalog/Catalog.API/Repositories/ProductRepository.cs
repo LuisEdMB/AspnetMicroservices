@@ -43,14 +43,14 @@ namespace Catalog.API.Repositories
 
         public async Task<IEnumerable<Product>> GetProductByCategory(string categoryName)
         {
-            var filter = Builders<Product>.Filter.ElemMatch(g => g.Category, categoryName);
+            var filter = Builders<Product>.Filter.Eq(g => g.Category, categoryName);
             return await _context.Products.Find(filter).ToListAsync();
         }
 
 
         public async Task<IEnumerable<Product>> GetProductByName(string productName)
         {
-            var filter = Builders<Product>.Filter.ElemMatch(g => g.Name, productName);
+            var filter = Builders<Product>.Filter.Eq(g => g.Name, productName);
             return await _context.Products.Find(filter).ToListAsync();
         }
 
