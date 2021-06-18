@@ -14,8 +14,7 @@ namespace Ordering.Infrastructure.Persistence
         public OrderContext(DbContextOptions<OrderContext> options) : base(options)
         { }
 
-        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess,
-            CancellationToken cancellationToken = default)
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             foreach (var entry in ChangeTracker.Entries<EntityBase>())
             {
