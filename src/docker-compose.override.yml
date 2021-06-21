@@ -23,7 +23,7 @@ services:
       - POSTGRES_DB=DiscountDb
     restart: always
     ports:
-      - "5433:5432"
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data/
 
@@ -35,6 +35,13 @@ services:
     restart: always
     ports:
       - "1435:1433"
+
+  rabbitmq:
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
 
   pgadmin:
     container_name: pgadmin
@@ -75,8 +82,10 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - "CacheSettings:ConnectionString=basketdb:6379"
       - "GrpcSettings:DiscountUrl=http://discount.grpc"
+      - "EventBusSettings:HostAddress=amqp://guest:guest@rabbitmq:5672"
     depends_on:
       - basketdb
+      - rabbitmq
     ports:
       - "9001:80"
 
@@ -84,7 +93,7 @@ services:
     container_name: discount.api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - "DatabaseSettings:ConnectionString=Server=discountdb;Port=5433;Database=DiscountDb;User Id=admin;Password=admin1234;"
+      - "DatabaseSettings:ConnectionString=Server=discountdb;Port=5432;Database=DiscountDb;User Id=admin;Password=admin1234;"
     depends_on:
       - discountdb
     ports:
@@ -94,7 +103,7 @@ services:
     container_name: discount.grpc
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - "DatabaseSettings:ConnectionString=Server=discountdb;Port=5433;Database=DiscountDb;User Id=admin;Password=admin1234;"
+      - "DatabaseSettings:ConnectionString=Server=discountdb;Port=5432;Database=DiscountDb;User Id=admin;Password=admin1234;"
     depends_on:
       - discountdb
     ports:
@@ -105,8 +114,10 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - "ConnectionStrings:OrderingConnectionString=Server=orderdb;Database=OrderDb;User Id=sa;Password=SwN12345678!.-"
+      - "EventBusSettings:HostAddress=amqp://guest:guest@rabbitmq:5672"
     depends_on:
       - orderdb
+      - rabbitmq
     ports:
       - "9004:80"
 
