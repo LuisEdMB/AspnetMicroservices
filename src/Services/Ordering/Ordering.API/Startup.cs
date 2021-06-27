@@ -1,4 +1,5 @@
 using EventBus.Messages.Common;
+using EventBus.Messages.Events;
 using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,6 +10,7 @@ using Microsoft.OpenApi.Models;
 using Ordering.API.EventBusConsumer;
 using Ordering.Application;
 using Ordering.Infrastructure;
+using RabbitMQ.Client;
 
 namespace Ordering.API
 {
@@ -37,6 +39,8 @@ namespace Ordering.API
                     cfg.ReceiveEndpoint(EventBusConstants.BasketCheckoutQueue, c => 
                     {
                         c.ConfigureConsumer<BasketCheckoutConsumer>(ctx);
+                        c.Bind<BasketCheckoutEvent>(x => x.ExchangeType = ExchangeType.Topic);
+                        c.ConfigureConsumeTopology = false;
                     });
                 });
             });

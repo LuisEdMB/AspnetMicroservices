@@ -2,7 +2,7 @@
 
 namespace EventBus.Messages.Events
 {
-    public class IntegrationBaseEvent
+    public abstract class IntegrationBaseEvent
     {
         public Guid Id { get; private set; }
         public DateTime CreationDate { get; private set; }
